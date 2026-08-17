@@ -1,0 +1,13 @@
+services:
+  monitor:
+    build: .
+    container_name: ziggo-dvb-monitor
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "8080:8080"
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+      - /dev/dvb:/dev/dvb
+      - /usr/share/dvb:/usr/share/dvb:ro

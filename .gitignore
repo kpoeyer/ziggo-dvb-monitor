@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Applicatiegegevens en DVB-scanresultaten
+data/
+*.db
+*.db-shm
+*.db-wal
+channels.conf
+
+# Lokale configuratie en geheimen
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs en tijdelijke bestanden
+*.log
+*.pid
+*.tmp
+*.swp
+*~
+.cache/
+
+# IDE/editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Besturingssystemen
+.DS_Store
+Thumbs.db
+
+# Build en pakketten
+build/
+dist/
+*.egg-info/
+
+# Docker lokale overrides
+docker-compose.override.yml

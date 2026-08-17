@@ -1,0 +1,21 @@
+[Unit]
+Description=Ziggo DVB-C zender- en wijzigingsmonitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ziggo-monitor
+Group=video
+WorkingDirectory=/opt/ziggo-dvb-monitor
+EnvironmentFile=/etc/ziggo-dvb-monitor.env
+ExecStart=/opt/ziggo-dvb-monitor/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/ziggo-dvb-monitor/data
+
+[Install]
+WantedBy=multi-user.target
