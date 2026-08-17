@@ -139,6 +139,10 @@ fi
 
 info "Bestandsrechten instellen"
 chown -R root:root "$TARGET_DIR"
+# Een bestaande doelmap kan eerder mode 700 hebben gehad; systemd geeft dan status=200/CHDIR.
+chmod 755 /opt "$TARGET_DIR"
+find "$TARGET_DIR/app" -type d -exec chmod 755 {} +
+chmod 755 "$TARGET_DIR/.venv" "$TARGET_DIR/.venv/bin"
 chown -R "$APP_USER:$APP_GROUP" "$TARGET_DIR/data"
 chmod 750 "$TARGET_DIR/data"
 chown -R root:"$APP_GROUP" "$CONFIG_DIR"
