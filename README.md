@@ -47,16 +47,32 @@ Vul de actuele Ziggo-frequentie, symboolsnelheid en zo nodig netwerk-ID van de a
 dvbv5-scan -a 0 -f 0 -o /tmp/channels.conf /etc/ziggo-fijnaart.conf
 ```
 
-## 3A. Native installatie (Debian/Ubuntu-achtig)
+## 3A. Volledige Linux-installatie in één keer (aanbevolen)
+
+Voor Debian, Ubuntu en Raspberry Pi OS:
 
 ```bash
-sudo ./tools/install-native.sh
-sudo nano /etc/ziggo-dvb-monitor.env
-sudo systemctl restart ziggo-dvb-monitor
-journalctl -u ziggo-dvb-monitor -f
+cd /dvb-c-monitor
+sudo bash tools/install-linux.sh
 ```
 
-Open `http://SERVER-IP:8080`.
+Het script installeert de Linux-pakketten en Python-omgeving, kopieert de applicatie naar `/opt/dvb-c-monitor`, detecteert de DVB-adapter, maakt de configuratie in `/etc/dvb-c-monitor/monitor.env` en activeert de systemd-service. Bestaande database en configuratie blijven bij een latere update behouden.
+
+Open daarna `http://SERVER-IP:8080`.
+
+Beheeropdrachten:
+
+```bash
+sudo systemctl status dvb-c-monitor
+sudo journalctl -u dvb-c-monitor -f
+sudo systemctl restart dvb-c-monitor
+```
+
+De Sundtek-driver zelf moet al op de host geïnstalleerd zijn. Het script meldt duidelijk wanneer `/dev/dvb/adapterN/demux0` nog ontbreekt.
+
+### Oud native installatiescript
+
+Het eerdere script blijft beschikbaar als `tools/install-native.sh`, maar de complete installer hierboven wordt aanbevolen.
 
 Voor andere distributies: installeer Python 3.10+, `dvb-tools`, maak een virtualenv, installeer `requirements.txt` en start:
 
