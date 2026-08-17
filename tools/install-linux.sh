@@ -10,7 +10,18 @@ CONFIG_DIR="${CONFIG_DIR:-/etc/dvb-c-monitor}"
 ENV_FILE="$CONFIG_DIR/monitor.env"
 SERVICE_FILE="/etc/systemd/system/dvb-c-monitor.service"
 PORT="${PORT:-8080}"
-SOURCE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# Zoek het project automatisch. SOURCE_DIR kan desgewenst expliciet worden meegegeven.
+SOURCE_DIR="${SOURCE_DIR:-}"
+if [[ -z "$SOURCE_DIR" ]]; then
+  for candidate in "$SCRIPT_DIR/.." "$SCRIPT_DIR" "$PWD" /dvb-c-monitor; do
+    candidate="$(cd -- "$candidate" 2>/dev/null && pwd || true)"
+    if [[ -n "$candidate" && -f "$candidate/requirements.txt" && -f "$candidate/app/main.py" ]]; then
+      SOURCE_DIR="$candidate"
+      break
+    fi
+  done
+fi
 
 red='\033[0;31m'; green='\033[0;32m'; yellow='\033[1;33m'; cyan='\033[0;36m'; reset='\033[0m'
 info() { printf "${cyan}==>${reset} %s\n" "$*"; }
@@ -19,7 +30,9 @@ warn() { printf "${yellow}LET OP:${reset} %s\n" "$*"; }
 die()  { printf "${red}FOUT:${reset} %s\n" "$*" >&2; exit 1; }
 
 [[ $EUID -eq 0 ]] || die "Start dit script met sudo: sudo bash tools/install-linux.sh"
-[[ -f "$SOURCE_DIR/requirements.txt" && -f "$SOURCE_DIR/app/main.py" ]] || die "Projectbestanden niet gevonden in $SOURCE_DIR"
+if [[ -z "$SOURCE_DIR" || ! -f "$SOURCE_DIR/requirements.txt" || ! -f "$SOURCE_DIR/app/main.py" ]]; then
+  die "Projectbestanden niet gevonden. Zet het volledige project in /dvb-c-monitor of start met: sudo SOURCE_DIR=/dvb-c-monitor bash install-linux.sh"
+fi
 command -v apt-get >/dev/null 2>&1 || die "Deze installer ondersteunt Debian, Ubuntu en Raspberry Pi OS (apt)."
 
 printf '\nZiggo DVB-C Monitor – volledige Linux-installatie\n'
